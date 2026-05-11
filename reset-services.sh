@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set +e
 
-FILE="$0"
-
 services=("nginx" "varnish" "apache2" "php-fpm" "mysql" "memcached" "redis-server" "imunify360")
 
 for s in "${services[@]}"; do
@@ -20,8 +18,12 @@ swapoff -a && swapon -a && \
     echo "$(tput setaf 2)   |✓ Swap cleared$(tput sgr0)" || \
     echo "$(tput setaf 1)   |✗ Swap clear failed$(tput sgr0)"
 
-# Imunify tuning + output
-imunify360-agent config update '{"ENHANCED_DOS": {"default_limit": 50}, "MALWARE_SCAN_INTENSITY": {"cpu": 1}}' >/dev/null && imunify360-agent config show | jq '{ENHANCED_DOS: {default_limit: .ENHANCED_DOS.default_limit}, MALWARE_SCAN_INTENSITY: {cpu: .MALWARE_SCAN_INTENSITY.cpu}}'
-
-# cleanup
-rm -f "$FILE"
+imunify360-agent config update '{"ENHANCED_DOS": {"default_limit": 50}, "MALWARE_SCAN_INTENSITY": {"cpu": 1}}' >/dev/null && \
+imunify360-agent config show | jq '{
+    ENHANCED_DOS: {
+        default_limit: .ENHANCED_DOS.default_limit
+    },
+    MALWARE_SCAN_INTENSITY: {
+        cpu: .MALWARE_SCAN_INTENSITY.cpu
+    }
+}'
