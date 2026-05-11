@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+exec </dev/tty
 
 backup_restore() {
     local app type input_date date backup_date_fmt dst newname newpath
